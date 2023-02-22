@@ -17,6 +17,9 @@ class RecipeDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final repository = Provider.of<MemoryRepository>(context);
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -38,6 +41,15 @@ class RecipeDetails extends StatelessWidget {
                     ),
                     Align(
                       alignment: Alignment.topLeft,
+                      child: CachedNetworkImage(
+                        imageUrl: recipe.image ?? '',
+                        alignment: Alignment.topLeft,
+                        fit: BoxFit.fill,
+                        width: size.width,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
                       child: Container(
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
@@ -53,12 +65,11 @@ class RecipeDetails extends StatelessWidget {
                 const SizedBox(
                   height: 16,
                 ),
-                // TODO: Replace hardcoded Chicken Vesuvio
-                const Padding(
-                  padding: EdgeInsets.only(left: 16.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
                   child: Text(
-                    'Chicken Vesuvio',
-                    style: TextStyle(
+                    recipe.label ?? '',
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                     ),
@@ -67,11 +78,12 @@ class RecipeDetails extends StatelessWidget {
                 const SizedBox(
                   height: 16,
                 ),
-                // TODO: Replace hardcoded calories
-                const Padding(
-                  padding: EdgeInsets.only(left: 16.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0),
                   child: Chip(
-                    label: Text('16CAL'),
+                    label: Text(
+                      getCalories(recipe.calories),
+                    ),
                   ),
                 ),
                 const SizedBox(
@@ -86,7 +98,7 @@ class RecipeDetails extends StatelessWidget {
                       ),
                     ),
                     onPressed: () {
-                      // TODO: Add insertRecipe here
+                      repository.insertRecipe(recipe);
                       Navigator.pop(context);
                     },
                     icon: SvgPicture.asset(
